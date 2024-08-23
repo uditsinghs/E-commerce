@@ -4,6 +4,9 @@ import { isAdmin, verifyJWT } from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 router.post("/register", registerUser);
-router.post("/login", verifyJWT, isAdmin, loginUser);
+router.post("/login",  loginUser);
 
 export default router;
+
+
+// 2.54

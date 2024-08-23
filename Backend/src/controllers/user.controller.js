@@ -1,5 +1,5 @@
 import { User } from "../models/user.model.js";
-import { hashPassword ,comparePassword} from "../helper/auth.js";
+import { hashPassword, comparePassword } from "../helper/auth.js";
 import jwt from "jsonwebtoken";
 // register user
 export const registerUser = async (req, res) => {
@@ -71,7 +71,7 @@ export const loginUser = async (req, res) => {
     // find user
     const user = await User.findOne({ email });
 
-    const match =  comparePassword(password, user.password);
+    const match = comparePassword(password, user.password);
     if (!match) {
       res.status(404).json({ message: "invalid crendintials", success: false });
     }
@@ -101,4 +101,3 @@ export const loginUser = async (req, res) => {
     res.status(500).send({ success: false, error, message: "Error in login" });
   }
 };
-

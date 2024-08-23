@@ -5,10 +5,12 @@ dotenv.config();
 import morgan from "morgan";
 import { MongoDB } from "./src/config/db.js";
 import userRouter from "./src/routes/user.route.js";
+import cors from 'cors'
 
 const PORT = process.env.PORT || 3000;
 // predefined middlewares
 app.use(express.json());
+app.use(cors())
 app.use(morgan("dev"));
 
 //routes -api
