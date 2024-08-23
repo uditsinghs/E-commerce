@@ -11,6 +11,8 @@ import Cart from './pages/Cart'
 import Policy from './pages/Policy'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Dashboard from "./admin/Dashboard"
+import PrivateRoute from "./routes/PrivateRoute"
 
 function App() {
   return (
@@ -20,6 +22,9 @@ function App() {
         <Routes>
           < Route path="/" element={<Home />} />
           < Route path="/about" element={<About />} />
+          < Route path="/dashboard" element={<PrivateRoute />}>
+            < Route path="" element={<Dashboard />} />
+          </Route>
           < Route path="/login" element={<Login />} />
           < Route path="/register" element={<Register />} />
           < Route path="/contact" element={<Contact />} />
@@ -29,7 +34,19 @@ function App() {
         </Routes>
         <Footer />
       </BrowserRouter>
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+
+      />
     </div>
   )
 }
