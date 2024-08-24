@@ -1,10 +1,15 @@
 import express from "express";
-import { loginUser, registerUser } from "../controllers/user.controller.js";
+import {
+  forgetPassword,
+  loginUser,
+  registerUser,
+} from "../controllers/user.controller.js";
 import { isAdmin, verifyJWT } from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.post("/forget-password", forgetPassword);
 router.get("/user-auth", verifyJWT, (req, res) => {
   try {
     res.status(200).send({ ok: true });
