@@ -11,11 +11,16 @@ import Cart from './pages/Cart'
 import Policy from './pages/Policy'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Dashboard from "./user/Dashboard"
+import Dashboard from "./pages/user/Dashboard"
 import PrivateRoute from "./routes/PrivateRoute"
 import ResetPassword from "./pages/ResetPassword"
-import AdminDashboard from "./admin/AdminDashboard"
+import AdminDashboard from "./pages/admin/AdminDashboard"
 import AdminRoute from "./routes/AdminRoute"
+import CreateCategory from "./pages/admin/CreateCategory"
+import CreateProduct from "./pages/admin/CreateProduct"
+import Users from "./pages/admin/Users"
+import Orders from "./pages/user/Orders"
+import Profile from "./pages/user/Profile"
 
 function App() {
   return (
@@ -27,9 +32,14 @@ function App() {
           < Route path="/about" element={<About />} />
           < Route path="/dashboard/user" element={<PrivateRoute />}>
             < Route path="" element={<Dashboard />} />
+            < Route path="/dashboard/user/orders" element={<Orders />} />
+            < Route path="/dashboard/user/profile" element={<Profile />} />
           </Route>
           < Route path="/dashboard/admin" element={<AdminRoute />}>
             < Route path="" element={<AdminDashboard />} />
+            < Route path="/dashboard/admin/create-category" element={<CreateCategory />} />
+            < Route path="/dashboard/admin/create-product" element={<CreateProduct />} />
+            < Route path="/dashboard/admin/users" element={<Users />} />
           </Route>
           < Route path="/login" element={<Login />} />
           < Route path="/reset-password" element={<ResetPassword />} />
