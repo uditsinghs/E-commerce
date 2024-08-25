@@ -11,8 +11,11 @@ import Cart from './pages/Cart'
 import Policy from './pages/Policy'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Dashboard from "./admin/Dashboard"
+import Dashboard from "./user/Dashboard"
 import PrivateRoute from "./routes/PrivateRoute"
+import ResetPassword from "./pages/ResetPassword"
+import AdminDashboard from "./admin/AdminDashboard"
+import AdminRoute from "./routes/AdminRoute"
 
 function App() {
   return (
@@ -22,10 +25,14 @@ function App() {
         <Routes>
           < Route path="/" element={<Home />} />
           < Route path="/about" element={<About />} />
-          < Route path="/dashboard" element={<PrivateRoute />}>
+          < Route path="/dashboard/user" element={<PrivateRoute />}>
             < Route path="" element={<Dashboard />} />
           </Route>
+          < Route path="/dashboard/admin" element={<AdminRoute />}>
+            < Route path="" element={<AdminDashboard />} />
+          </Route>
           < Route path="/login" element={<Login />} />
+          < Route path="/reset-password" element={<ResetPassword />} />
           < Route path="/register" element={<Register />} />
           < Route path="/contact" element={<Contact />} />
           < Route path="/cart" element={<Cart />} />

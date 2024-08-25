@@ -1,11 +1,12 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 
-const Spinner = () => {
+const Spinner = ({ path = "login" }) => {
   const location = useLocation()
   const navigate = useNavigate();
-  const [count, setCount] = useState(5);
+  const [count, setCount] = useState(3);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -13,13 +14,13 @@ const Spinner = () => {
     }, 1000);
 
     if (count === 0) {
-      navigate("/login",{
-        state:location.pathname
-      }); 
+      navigate(`/${path}`, {
+        state: location.pathname
+      });
     }
 
     return () => clearInterval(interval);
-  }, [count, navigate,location]);
+  }, [count, navigate, location, path]);
 
   return (
     <div className="flex justify-center items-center h-screen flex-col gap-3">

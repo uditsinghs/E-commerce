@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 // register user
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, phone, password, address ,answer } = req.body;
+    const { name, email, phone, password, address, answer } = req.body;
     // validation
     if (!name) {
       res.status(400).send({ message: "name is required" });
@@ -40,7 +40,7 @@ export const registerUser = async (req, res) => {
       phone,
       password: hashedPassword,
       address,
-      answer
+      answer,
     });
     // if user create successfully check for user
     if (!newUser) {
@@ -80,7 +80,7 @@ export const loginUser = async (req, res) => {
     }
     // generate token
 
-    const token = await jwt.sign(
+    const token = jwt.sign(
       {
         userId: user._id,
       },
@@ -96,6 +96,7 @@ export const loginUser = async (req, res) => {
         email: user.email,
         phone: user.phone,
         address: user.address,
+        role: user.role,
       },
       token,
     });
@@ -127,9 +128,9 @@ export const forgetPassword = async (req, res) => {
     }
     const hashedPassword = await hashPassword(newPassword);
     await User.findByIdAndUpdate(user._id, { password: hashedPassword });
-    res.status(200).send({message:"password Reset successfully",
-      success:true
-    })
+    res
+      .status(200)
+      .send({ message: "password Reset successfully", success: true });
   } catch (error) {
     console.log(error);
     res.status(500).send({

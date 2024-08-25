@@ -18,6 +18,14 @@ router.get("/user-auth", verifyJWT, (req, res) => {
   }
 });
 
+// admin auth
+router.get("/admin-auth", verifyJWT, isAdmin, (req, res) => {
+  try {
+    res.status(200).send({ ok: true });
+  } catch (error) {
+    res.status(500).send({ Message: "something went wrong" });
+  }
+});
 export default router;
 
 // 2.54

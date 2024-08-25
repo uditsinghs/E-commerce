@@ -14,6 +14,7 @@ function Register() {
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [answer, setAnswer] = useState('')
 
   // send the data to backend
   const handleSubmit = async (e) => {
@@ -27,6 +28,7 @@ function Register() {
         password,
         phone,
         address,
+        answer
       });
       if (res.data.success) {
         toast.success(res.data.message);
@@ -125,6 +127,21 @@ function Register() {
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="Enter your address"
+              className="mt-1 p-2 block w-full border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700">
+            who is your Best friend..?
+            </label>
+            <input
+              type="text"
+              name="answer"
+              autoComplete="off"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              placeholder="Best Friend..."
               className="mt-1 p-2 block w-full border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
               required
             />

@@ -4,14 +4,15 @@ import axios from 'axios';
 import { Outlet } from 'react-router-dom';
 import Spinner from "./Spinner";
 
-const PrivateRoute = () => {
+
+function AdminRoute() {
   const [auth] = useAuth();
   const [ok, setOk] = useState(false);
 
   useEffect(() => {
     const authCheck = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/v1/users/user-auth', {
+        const res = await axios.get('http://localhost:8080/api/v1/users/admin-auth', {
           headers: {
             "Authorization": `Bearer ${auth?.token}`
           }
@@ -26,11 +27,11 @@ const PrivateRoute = () => {
         setOk(false);
       }
     };
-    
+
     if (auth?.token) authCheck();
   }, [auth?.token]);
 
-  return ok ? <Outlet /> : <Spinner/>;
+  return ok ? <Outlet /> : <Spinner path="" />;
 }
 
-export default PrivateRoute;
+export default AdminRoute
