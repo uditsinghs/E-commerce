@@ -5,6 +5,7 @@ import { createContext, useState, useContext, useEffect } from 'react';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  
   const [auth, setAuth] = useState({
     user: null,
     token: ""
@@ -17,7 +18,7 @@ export const AuthProvider = ({ children }) => {
       setAuth({
         user: parseData.user,
         token: parseData.token
-      }); 
+      });
     }
   }, []);
 

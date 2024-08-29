@@ -7,7 +7,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false); // State to manage dropdown
+  const [dropdownOpen, setDropdownOpen] = useState(false); 
   const [auth, setAuth] = useAuth();
 
   const handleLogout = () => {
