@@ -70,7 +70,6 @@ export const fetchAllProduct = async (req, res) => {
   try {
     const products = await Product.find({})
       .populate("category")
-      .select("-image")
       .limit(12)
       .sort({ createdAt: -1 });
     res.status(200).send({
@@ -91,7 +90,6 @@ export const fetchAllProduct = async (req, res) => {
 export const fetchSingleProduct = async (req, res) => {
   try {
     const singleProduct = await Product.findOne({ slug: req.params.slug })
-      .select("-image")
       .populate("category");
 
     if (!singleProduct) {
@@ -113,17 +111,21 @@ export const fetchSingleProduct = async (req, res) => {
 };
 
 // fetch product image
+
 export const fetchProductImage = async (req, res) => {
   try {
-    const productImage = await Product.findById(req.params.pid).select("image");
-    if (!productImage) {
+    const { pid } = req.params;
+
+    const product = await Product.findById(pid).select("image");
+
+    if (!product || !product.image) {
       return res
         .status(404)
         .send({ message: "Image not found", success: false });
     }
-    res
-      .status(200)
-      .send({ message: "product image fetched", success: true, productImage });
+
+    // res.set('Content-Type', 'image/jpeg');
+    res.status(200).send(product.image);
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -138,7 +140,7 @@ export const fetchProductImage = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
   try {
-    await Product.findByIdAndDelete(req.params.pid).select("-image");
+    await Product.findByIdAndDelete(req.params.pid)
     res
       .status(200)
       .send({ message: "Product deleted successfully", success: true });

@@ -15,7 +15,7 @@ const CreateProduct = () => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [shipping, setShipping] = useState(false);
+  const [shipping, setShipping] = useState("");
 
   // get category
   const getCategories = async () => {
@@ -44,11 +44,10 @@ const CreateProduct = () => {
       productData.append("price", price)
       productData.append("quantity", quantity)
       productData.append("category", category)
-      productData.append("shipping", shipping)
+      // productData.append("shipping", shipping)
       productData.append("image", image)
-      const { data } = await axios.post("http://localhost:8080/api/v1/product/create-product", {
-        productData
-      },
+      const { data } = await axios.post("http://localhost:8080/api/v1/product/create-product",
+        productData,
         {
           headers: {
             Authorization: `Bearer ${auth?.token}`,
