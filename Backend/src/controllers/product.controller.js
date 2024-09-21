@@ -89,8 +89,9 @@ export const fetchAllProduct = async (req, res) => {
 // get single product
 export const fetchSingleProduct = async (req, res) => {
   try {
-    const singleProduct = await Product.findOne({ slug: req.params.slug })
-      .populate("category");
+    const singleProduct = await Product.findOne({
+      slug: req.params.slug,
+    }).populate("category");
 
     if (!singleProduct) {
       return res.status(404).send({ message: "Product not available" });
@@ -140,7 +141,7 @@ export const fetchProductImage = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
   try {
-    await Product.findByIdAndDelete(req.params.pid)
+    await Product.findByIdAndDelete(req.params.pid);
     res
       .status(200)
       .send({ message: "Product deleted successfully", success: true });
@@ -156,7 +157,8 @@ export const deleteProduct = async (req, res) => {
 // update single-Product
 export const updateProduct = async (req, res) => {
   try {
-    const { name, description, price, category, quantity, shipping ,slug} = req.body;
+    const { name, description, price, category, quantity, shipping, slug } =
+      req.body;
     const imageFile = req.files?.image?.[0];
 
     // Validation
@@ -207,7 +209,7 @@ export const updateProduct = async (req, res) => {
     res.status(200).send({
       message: "Product updated successfully",
       success: true,
-     updatedProduct,
+      updatedProduct,
     });
   } catch (error) {
     console.log(error);
@@ -215,6 +217,99 @@ export const updateProduct = async (req, res) => {
       message: "Error while updating product",
       success: false,
       error: error.message,
+    });
+  }
+};
+
+// filter by Price
+
+export const FilterProduct = async (req, res) => {
+  const { checked, radio } = req.body;
+  try {
+    let args = {};
+
+    // Handle category filter with $in for multiple categories
+    if (checked.length > 0) {
+      args.category = { $in: checked };
+    }
+
+    // Handle price range filter
+    if (radio.length === 2) {
+      args.price = { $gte: radio[0], $lte: radio[1] };
+    }
+
+    // Fetch products based on filters
+    const products = await Product.find(args);
+
+    return res.status(200).send({
+      success: true,
+      products,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error While Filtering Products",
+      error,
+    });
+  }
+};
+
+export const productCountController = async (req, res) => {
+  try {
+    const total = await Product.find({}).estimatedDocumentCount();
+    res.status(200).send({
+      success: true,
+      total,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error While counting Products",
+      error,
+    });
+  }
+};
+
+export const productListController = async (req, res) => {
+  try {
+    const PerPage = 6;
+    const { page } = req.params || 1;
+    const products = await Product.find({})
+      .skip((page - 1) * PerPage)
+      .limit(PerPage)
+      .sort({ createdAt: -1 });
+    res.status(200).send({
+      success: true,
+      products,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      message: "Error While counting Products by Pages",
+      error,
+    });
+  }
+};
+export const searchProduct = async (req, res) => {
+  try {
+    const { keyword } = req.params;
+    const result = await Product.find({
+      $or: [
+        { name: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } }
+      ]
+    })
+    
+    res.status(200).send({ result });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      message: "Error while searching product",
+      error,
     });
   }
 };

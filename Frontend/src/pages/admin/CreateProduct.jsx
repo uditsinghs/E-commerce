@@ -64,7 +64,7 @@ const CreateProduct = () => {
     }
   }
   return (
-    <div className="w-full h-screen flex p-4">
+    <div className="w-full h-full flex p-4">
       <div className="md:w-[20%] w-[30%]">
         <AdminMenu />
       </div>

@@ -7,6 +7,10 @@ import {
   fetchProductImage,
   deleteProduct,
   updateProduct,
+  FilterProduct,
+  productCountController,
+  productListController,
+  searchProduct
 } from "../controllers/product.controller.js";
 const router = express.Router();
 // import formidable from "express-formidable";
@@ -29,6 +33,7 @@ router.get("/fetch-product/:slug", fetchSingleProduct);
 router.get("/fetch-image/:pid", fetchProductImage);
 // delete product
 router.delete("/delete-product/:pid", verifyJWT, isAdmin, deleteProduct);
+// update Product
 router.put(
   "/update-product/:pid",
   verifyJWT,
@@ -36,4 +41,11 @@ router.put(
   upload.fields([{ name: "image", maxCount: 1 }]),
   updateProduct
 );
+router.post("/filter-product", FilterProduct);
+// pagination
+router.get("/product-count", productCountController);
+router.get("/productlist-count/:page", productListController);
+
+// search Product--
+router.get('/search/:keyword',searchProduct)
 export default router;

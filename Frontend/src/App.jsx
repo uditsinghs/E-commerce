@@ -23,15 +23,19 @@ import Orders from "./pages/user/Orders"
 import Profile from "./pages/user/Profile"
 import Products from "./pages/admin/Products"
 import UpdateProduct from "./pages/admin/UpdateProduct"
+import Search from "./pages/Search"
 // import UpdateCategory from "./pages/admin/UpdateCategory"
 
 function App() {
   return (
-    <div className="w-full h-screen">
+    <div className="w-full">
       <BrowserRouter>
         <Header />
         <Routes>
           < Route path="/" element={<Home />} />
+          
+          < Route path="/search" element={<Search />} />
+
           < Route path="/about" element={<About />} />
           < Route path="/dashboard/user" element={<PrivateRoute />}>
             < Route path="" element={<Dashboard />} />

@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import {  NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { FaCartShopping } from "react-icons/fa6";
 import { useAuth } from '../context/Auth';
 import { toast } from 'react-toastify';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import SearchInput from './form/SearchInput';
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false); 
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [auth, setAuth] = useAuth();
 
   const handleLogout = () => {
@@ -35,6 +36,7 @@ function Header() {
                 <NavLink to="/about" className="py-4 px-2 text-gray-500 border-b-4 border-transparent hover:border-indigo-500">About</NavLink>
                 <NavLink to="/contact" className="py-4 px-2 text-gray-500 border-b-4 border-transparent hover:border-indigo-500">Contact</NavLink>
                 <NavLink to="/policy" className="py-4 px-2 text-gray-500 border-b-4 border-transparent hover:border-indigo-500">Policy</NavLink>
+                <SearchInput />
               </div>
             </div>
 
@@ -47,8 +49,8 @@ function Header() {
                 </>
               ) : (
                 <div className="relative">
-                  <button 
-                    onClick={() => setDropdownOpen(!dropdownOpen)} 
+                  <button
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
                     className="flex items-center py-2 px-4 font-medium text-gray-500 rounded hover:bg-gray-200 transition duration-300"
                   >
                     {auth.user.name}
@@ -57,8 +59,8 @@ function Header() {
                   {/* Dropdown Menu */}
                   {dropdownOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
-                      <NavLink 
-                      to={`/dashboard/${auth?.user?.role==1 ? "admin":"user"}`}
+                      <NavLink
+                        to={`/dashboard/${auth?.user?.role == 1 ? "admin" : "user"}`}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={() => setDropdownOpen(false)}
                       >
@@ -122,8 +124,8 @@ function Header() {
               </>
             ) : (
               <li>
-                <button 
-                  onClick={() => handleLogout()} 
+                <button
+                  onClick={() => handleLogout()}
                   className="block py-2 px-2 font-medium text-gray-500 rounded hover:bg-gray-200 transition duration-300"
                 >
                   Logout
