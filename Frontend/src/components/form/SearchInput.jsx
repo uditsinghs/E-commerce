@@ -5,13 +5,14 @@ import { useNavigate } from "react-router-dom";
 const SearchInput = () => {
   const [values, setValues] = useSearch();
   const navigate = useNavigate();
-  // let results = values.results;
+
 
   const handleSearch = async (e) => {
     e.preventDefault(); // Prevent form submission
     try {
       const { data } = await axios.get(`http://localhost:8080/api/v1/product/search/${values.keyword}`);
       setValues({ ...values, results: data });
+    
       navigate('/search');
     } catch (error) {
       console.log(error);
@@ -24,8 +25,8 @@ const SearchInput = () => {
         type="text"
         className="grow"
         placeholder="Search"
-        value={values.keyword} // Assuming 'keyword' is the correct field
-        onChange={(e) => setValues({ ...values, keyword: e.target.value })} // Correct 'keyword' field
+        value={values.keyword} 
+        onChange={(e) => setValues({ ...values, keyword: e.target.value })} 
       />
       <svg
         xmlns="http://www.w3.org/2000/svg"

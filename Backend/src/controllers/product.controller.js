@@ -1,5 +1,5 @@
-import { populate } from "dotenv";
-import { Product } from "../models/product.model.js";
+import { Category } from "../models/category.model.js"
+import { Product } from "../models/product.model.js"
 import uploadOnCloudinary from "../utils/cloudinary.js";
 import slugify from "slugify";
 
@@ -299,10 +299,10 @@ export const searchProduct = async (req, res) => {
     const result = await Product.find({
       $or: [
         { name: { $regex: keyword, $options: "i" } },
-        { description: { $regex: keyword, $options: "i" } }
-      ]
-    })
-    
+        { description: { $regex: keyword, $options: "i" } },
+      ],
+    });
+
     res.status(200).send({ result });
   } catch (error) {
     console.log(error);
@@ -314,3 +314,47 @@ export const searchProduct = async (req, res) => {
   }
 };
 
+// Related Product--
+export const relatedProduct = async (req, res) => {
+  try {
+    const { pid, cid } = req.params;
+
+    const products = await Product.find({
+      category: cid,
+      _id: { $ne: pid },
+    })
+      .limit(3)
+      .populate("category");
+
+    // Send the fetched products in the response
+    res.status(200).send({
+      success: true,
+      products,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      message: "Error while fetching related products",
+      error,
+    });
+  }
+};
+
+// fetch category-wise Product
+
+export const fetchCategorywiseProduct = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const category = await Category.findOne({ slug });
+    const products = await Product.find({ category }).populate("category");
+    res.status(200).send({ success: true, products, category });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      error,
+      success: false,
+      message: "Error While fetching Product Category-Wise",
+    });
+  }
+};

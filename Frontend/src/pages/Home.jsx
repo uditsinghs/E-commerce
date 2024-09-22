@@ -159,7 +159,9 @@ function Home() {
                   </div>
                 </div>
                 <div className="flex justify-evenly gap-4 p-2">
-                  <Link className="py-2 px-2 text-white bg-blue-500 rounded-lg hover:bg-blue-700 duration-300 ">More Details</Link>
+                  <Link
+                    to={`/product/${p.slug}`}
+                    className="py-2 px-2 text-white bg-blue-500 rounded-lg hover:bg-blue-700 duration-300 ">More Details</Link>
                   <button className="py-2 px-2 text-white bg-gray-500 rounded-lg hover:bg-gray-700 duration-300 ">Add to Cart</button>
                 </div>
               </div>
