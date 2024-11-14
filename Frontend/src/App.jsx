@@ -27,6 +27,7 @@ import Search from "./pages/Search"
 import ProductDetail from "./pages/ProductDetail"
 import Categories from "./pages/Categories"
 import SingleCategory from "./pages/SingleCategory"
+import Checkout from "./pages/Checkout"
 // import UpdateCategory from "./pages/admin/UpdateCategory"
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
         <Routes>
           < Route path="/" element={<Home />} />
           < Route path="/product/:slug" element={<ProductDetail />} />
+          < Route path="/checkout" element={<Checkout />} />
           < Route path="/search" element={<Search />} />
           < Route path="/categories" element={<Categories />} />
           < Route path="/category/:slug" element={<SingleCategory />} />
@@ -67,8 +69,8 @@ function App() {
         <Footer />
       </BrowserRouter>
       <ToastContainer
-        position="top-right"
-        autoClose={5000}
+        position="bottom-right"
+        autoClose={2000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -76,7 +78,6 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="colored"
 
       />
     </div>

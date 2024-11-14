@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/Auth";
 import { Link } from "react-router-dom";
+// import { useLoading } from "../context/loading";
 const URL = "http://localhost:8080/api/v1/users/login";
 
 function Login() {
@@ -12,16 +13,21 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [auth, setAuth] = useAuth();
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
+  
     try {
+    
       const res = await axios.post(URL, {
         email,
         password,
       });
 
       if (res.data.success) {
+        setLoading(false)
         toast.success(res.data.message);
 
         // Update the auth state
@@ -43,6 +49,7 @@ function Login() {
         toast.error(res.data.message);
       }
     } catch (error) {
+      setLoading(false)
       toast.error("Something went wrong! Please try again.");
       console.log(error);
     }
@@ -96,12 +103,13 @@ function Login() {
               Reset Password
             </button>
           </Link>
-          <button
+          {loading ? "loading" : <button
             type="submit"
             className="w-full mt-2 bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition-colors"
           >
             Login
-          </button>
+          </button>}
+
 
         </form>
       </div>

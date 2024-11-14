@@ -106,6 +106,19 @@ export const loginUser = async (req, res) => {
   }
 };
 
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.status(200).send({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ success: false, message: "Error fetching users", error });
+  }
+};
+
 // forget-password
 
 export const forgetPassword = async (req, res) => {
@@ -135,6 +148,35 @@ export const forgetPassword = async (req, res) => {
     console.log(error);
     res.status(500).send({
       message: "something went wrong",
+      success: false,
+      error,
+    });
+  }
+};
+
+// update Profile
+export const updateProfile = async (req, res) => {
+  try {
+    const { name, email, phone, address } = req.body;
+    const user = await User.findById(req.user._id);
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      {
+        name: name || user.name,
+        email: email || user.email,
+        phone: phone || user.phone,
+        address: address || user.address,
+      },
+      { new: true }
+    );
+    res.status(200).send({
+      success: true,
+      updatedUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      message: "Error while updating user profile",
       success: false,
       error,
     });

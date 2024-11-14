@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 const CreateProduct = () => {
   const navigate = useNavigate()
   const [auth] = useAuth()
+  const [loading, setLoading] = useState(false)
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState("");
   const [image, setImage] = useState("");
@@ -20,11 +21,14 @@ const CreateProduct = () => {
   // get category
   const getCategories = async () => {
     try {
+      setLoading(true)
       const response = await axios.get(
         "http://localhost:8080/api/v1/category/fetch-category"
       );
+      setLoading(false)
       setCategories(response.data.Categories);
     } catch (error) {
+      setLoading(false)
       console.error(error);
       toast.error("Error while fetching categories");
     }
@@ -46,6 +50,7 @@ const CreateProduct = () => {
       productData.append("category", category)
       // productData.append("shipping", shipping)
       productData.append("image", image)
+      setLoading(true)
       const { data } = await axios.post("http://localhost:8080/api/v1/product/create-product",
         productData,
         {
@@ -54,10 +59,12 @@ const CreateProduct = () => {
           }
         })
       if (data.success) {
+        setLoading(false)
         toast.success("Product Created Successfully")
         navigate('/dashboard/admin/products')
       }
     } catch (error) {
+      setLoading(false)
       console.log(error);
       toast.error("something went wrong")
 
@@ -152,7 +159,10 @@ const CreateProduct = () => {
 
             </div>
             <div className="mb-3">
-              <button onClick={handleCreate} className="w-full bg-blue-500 py-2 text-white hover:bg-blue-700 duration-300 ">Create Product</button>
+              {loading ? (
+                <span className="text-center">Creating..</span>
+              ):   <button onClick={handleCreate} className="w-full bg-blue-500 py-2 text-white hover:bg-blue-700 duration-300 ">Create Product</button>}
+            
             </div>
           </div>
         </div>

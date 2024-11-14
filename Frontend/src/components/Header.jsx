@@ -6,12 +6,14 @@ import { toast } from 'react-toastify';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import SearchInput from './form/SearchInput';
 import useCategory from '../../../Backend/src/hooks/useCategory';
+import { useCart } from '../context/Cart';
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [auth, setAuth] = useAuth();
   const categories = useCategory();
+  const [cart] = useCart()
 
   const handleLogout = () => {
     setAuth({
@@ -30,7 +32,7 @@ function Header() {
             {/* Left section: Logo and Nav items */}
             <div className="flex space-x-7">
               <NavLink to="/" className="flex items-center py-4 px-2">
-                <img src="https://via.placeholder.com/40" alt="Logo" className="h-8 w-8 mr-2" />
+                <img src="../../public/images/e-logo.png" alt="Logo" className="h-20 w-20 mr-2" />
                 <span className="font-semibold text-gray-500 text-lg">E-commerce</span>
               </NavLink>
               <div className="hidden md:flex items-center space-x-1">
@@ -111,9 +113,13 @@ function Header() {
                   </div>
                 )}
               </div>
-              <NavLink to="/cart" className="py-2 px-2 text-2xl rounded-full hover:bg-gray-200 transition duration-300">
-                <FaCartShopping />
-              </NavLink>
+              <div className=''>
+                <NavLink to="/cart" className="py-2 px-2 text-2xl relative  rounded-full hover:bg-gray-200 transition duration-300">
+                  <FaCartShopping />
+                
+                </NavLink>
+                <span className=' bg-red-700 text-white w-6 h-6 text-center rounded-full absolute top-3'>{cart.length}</span>
+              </div>
             </div>
 
             {/* Mobile menu button */}

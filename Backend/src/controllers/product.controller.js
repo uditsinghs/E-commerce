@@ -118,6 +118,7 @@ export const fetchProductImage = async (req, res) => {
     const { pid } = req.params;
 
     const product = await Product.findById(pid).select("image");
+    
 
     if (!product || !product.image) {
       return res

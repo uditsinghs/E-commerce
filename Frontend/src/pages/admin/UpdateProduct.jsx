@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useAuth } from "../../context/Auth";
 import { useNavigate, useParams } from "react-router-dom";
+import Spinner from "../../routes/Spinner";
 
 const UpdateProduct = () => {
   const { slug } = useParams();
@@ -13,20 +14,22 @@ const UpdateProduct = () => {
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [shipping, setShipping] = useState(false);
   const [id, setId] = useState("");
-
+  const [loading, setLoading] = useState(false)
   // Fetch categories
   const getCategories = async () => {
     try {
+
       const response = await axios.get(
-        "http://localhost:8080/api/v1/category/fetch-category"
+        `http://localhost:8080/api/v1/category/fetch-category`
       );
-      setCategories(response.data.Categories);
+      setCategories(response.data.Categories || []);
     } catch (error) {
       console.error(error);
       toast.error("Error while fetching categories");
@@ -43,16 +46,18 @@ const UpdateProduct = () => {
       const { data } = await axios.get(
         `http://localhost:8080/api/v1/product/fetch-product/${slug}`
       );
-      setName(data.singleProduct.name);
-      setDescription(data.singleProduct.description);
-      setQuantity(data.singleProduct.quantity);
-      setPrice(data.singleProduct.price);
-      setCategory(data.singleProduct.category);
-      setShipping(data.singleProduct.shipping);
-      setImage(data.singleProduct.image);
-      setId(data.singleProduct._id);
+      if (data?.singleProduct) {
+        setName(data.singleProduct.name);
+        setDescription(data.singleProduct.description);
+        setQuantity(data.singleProduct.quantity);
+        setPrice(data.singleProduct.price);
+        setCategory(data.singleProduct.category);
+        setShipping(data.singleProduct.shipping);
+        setImage(data.singleProduct.image);
+        setId(data.singleProduct._id);
+      }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("Error fetching product details");
     }
   };
@@ -61,13 +66,36 @@ const UpdateProduct = () => {
     getSingleProduct();
   }, [slug]);
 
+  // Update the preview whenever the image file changes
+  useEffect(() => {
+    if (image instanceof File) {
+      const previewUrl = URL.createObjectURL(image);
+      setImagePreview(previewUrl);
+
+      return () => {
+        URL.revokeObjectURL(previewUrl);
+      };
+    } else {
+      setImagePreview(null);
+    }
+  }, [image]);
+
+  // Handle image change
+  const handleImageChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setImage(selectedFile);
+  };
+
   // Handle form submission to update the product
   const handleUpdate = async (e) => {
     e.preventDefault();
-
     // Validate required fields
-    if (!name || !description || !price || !quantity || !category) {
+    if (!name || !description || !price || !quantity || category === "Select Category") {
       return toast.error("Please fill out all required fields");
+    }
+
+    if (!auth?.token) {
+      return toast.error("User is not authenticated. Please log in.");
     }
 
     try {
@@ -79,7 +107,7 @@ const UpdateProduct = () => {
       productData.append("category", category);
       productData.append("shipping", shipping ? "1" : "0");
 
-      if (image) {
+      if (image instanceof File) {
         productData.append("image", image);
       }
 
@@ -98,14 +126,19 @@ const UpdateProduct = () => {
         navigate("/dashboard/admin/products");
       }
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
       toast.error("Something went wrong");
     }
   };
 
-  // Handle Delete
+  // Handle delete
   const handleDelete = async () => {
+    if (!auth?.token) {
+      return toast.error("User is not authenticated. Please log in.");
+    }
+
     try {
+      setLoading(true)
       const { data } = await axios.delete(
         `http://localhost:8080/api/v1/product/delete-product/${id}`,
         {
@@ -115,19 +148,21 @@ const UpdateProduct = () => {
         }
       );
       if (data.success) {
+        setLoading(false)
         toast.success("Product deleted successfully");
         navigate("/dashboard/admin/products");
       } else {
         toast.error(data.message || "Failed to delete Product");
       }
     } catch (error) {
+      setLoading(true)
       console.error(error);
       toast.error("Error while deleting Product");
     }
   };
 
   return (
-    <div className="w-full h-screen flex p-4">
+    <div className="w-full flex p-4">
       <div className="md:w-[20%] w-[30%]">
         <AdminMenu />
       </div>
@@ -140,7 +175,7 @@ const UpdateProduct = () => {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
-              <option>Select Category</option>
+              <option disabled>Select Category</option>
               {categories?.map((c) => (
                 <option key={c._id} value={c._id}>
                   {c.name}
@@ -151,34 +186,26 @@ const UpdateProduct = () => {
 
           <div className="mb-3">
             <label className="w-full bg-slate-300 text-center p-2 font-bold">
-              {image ? image.name : "Upload Image"}
+              {image ? (image instanceof File ? image.name : "Current Image") : "Upload Image"}
               <input
                 type="file"
                 name="image"
                 accept="image/*"
-                onChange={(e) => setImage(e.target.files[0])}
+                onChange={handleImageChange}
                 hidden
               />
             </label>
           </div>
 
           <div className="mb-3 flex justify-center">
-            {image ? (
-              <div className="text-center">
-                <img
-                  src={URL.createObjectURL(image)}
-                  alt="product-image"
-                  className="cover h-[200px]"
-                />
-              </div>
+            {imagePreview ? (
+              <img src={`http://localhost:8080/api/v1/product/fetch-image/${id}`} alt="product-image" className="cover h-[200px]" />
             ) : (
-              <div className="text-center">
-                <img
-                  src={`http://localhost:8080/api/v1/product/fetch-image/${id}`}
-                  alt="product-image"
-                  className="cover h-[200px]"
-                />
-              </div>
+              <img
+                src={imagePreview}
+                alt="product-image"
+                className="cover h-[200px]"
+              />
             )}
           </div>
 
@@ -194,7 +221,6 @@ const UpdateProduct = () => {
             </div>
             <div className="mb-3">
               <textarea
-                type="text"
                 placeholder="Description"
                 value={description}
                 rows={4}
@@ -226,7 +252,7 @@ const UpdateProduct = () => {
                 onChange={(e) => setShipping(e.target.value === "1")}
                 className="outline-none w-full"
               >
-                <option>Select Shipping</option>
+                <option disabled>Select Shipping</option>
                 <option value="0">No</option>
                 <option value="1">Yes</option>
               </select>
@@ -240,12 +266,17 @@ const UpdateProduct = () => {
               </button>
             </div>
             <div className="mb-3">
-              <button
+              {loading ? (
+                <Spinner />
+              ) : <button
                 onClick={handleDelete}
                 className="w-full bg-red-500 py-2 text-white hover:bg-red-700 duration-300"
               >
                 Delete Product
               </button>
+              }
+
+
             </div>
           </div>
         </div>
